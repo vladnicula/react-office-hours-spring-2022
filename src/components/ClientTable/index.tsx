@@ -1,5 +1,6 @@
 import classNames from 'classnames'
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { memo, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { ClientDataContext } from '../../../pages';
 
 export type ClientTableRowItemProps = {
     name: string
@@ -54,47 +55,47 @@ export const ClientTableRowItem = (props: ClientTableRowItemProps) => {
     );
   }
 
-export const ClientTable = () => {
+export type ClientTableProps = {
+}
 
-    const [clientData, setClientData] = useState({
-        isLoaded: false,
-        targetClientToken: "111",
-        clients: [] as Record<string, any>[]
-    });
+export type ErrorMessageProps = {
+    message: string
+}
 
-    useEffect(() => {
-        let isEffectActive = true;
-        setClientData((previousState) => {
-            return {
-                ...previousState,
-                isLoaded: false,
-                clients: []
-            }
-        });
+export const ErrorMessage = (props: ErrorMessageProps) => {
+    return (
+        <tr>
+        <td colSpan={4}>
+        <div className="flex gap-4 bg-red-500 p-4 rounded-md">
+            <div className="w-max">
+                <div className="h-10 w-10 flex rounded-full bg-gradient-to-b from-red-100 to-red-300 text-red-700">
+                    <span className="material-icons material-icons-outlined m-auto" style={{fontSize:20}}>
+                        <svg xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M4 8v-2a2 2 0 0 1 2 -2h2"></path>
+                            <path d="M4 16v2a2 2 0 0 0 2 2h2"></path>
+                            <path d="M16 4h2a2 2 0 0 1 2 2v2"></path>
+                            <path d="M16 20h2a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M9 10h.01"></path>
+                            <path d="M15 10h.01"></path>
+                            <path d="M9.5 15.05a3.5 3.5 0 0 1 5 0"></path>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <div className="space-y-1 text-sm">
+                <h6 className="font-medium text-white">Error</h6>
+                <p className="text-red-100 leading-tight">{props.message}</p>
+            </div>
+        </div>
+        </td>
+        </tr>
+    )
+}
 
-        fetch(`//localhost:3139/clients`, {
-            headers: {
-                "Authorization": `Bearer ${clientData.targetClientToken}`
-            }
-        })
-        .then((httpResponse) => {
-            return httpResponse.json();
-        })
-        .then((jsonResponse) => {
-            if ( isEffectActive ) {
-                setClientData((s) => ({
-                    ...s,
-                    isLoaded: true,
-                    clients: jsonResponse.clients
-                }))
-            }
-        })
-
-        return () => {
-            isEffectActive = false;
-        }
-
-    }, [clientData.targetClientToken])
+export const ClientTable = memo<ClientTableProps>((props) => {
+    console.log("render ClientTable")
+    const clientData = useContext(ClientDataContext);
 
     const loadingMask = (
         <tr>
@@ -124,66 +125,49 @@ export const ClientTable = () => {
     }) : null;
 
     return (
-        <section className="antialiased bg-gray-100 text-gray-600 h-screen px-4">
-            <div className="flex flex-col justify-center h-full">
-                <div className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
-                    <header className="px-5 py-4 border-b border-gray-100 flex">
-                        <h2 className="font-semibold text-gray-800 flex-1">Customers</h2>
-                    
-                        <button
-                            className='bg-blue-500 rounded-full font-bold text-white px-4 py-3 transition-colors hover:bg-blue-600 mr-2'
-                            onClick={() => {
-                                setClientData((prevState) => ({
-                                    ...prevState,
-                                    targetClientToken: "111",
-                                }));
-                                
-                            }}
-                        >Clients for user 1</button>
-
-                        <button
-                            className='bg-blue-500 rounded-full font-bold text-white px-4 py-3 transition-colors hover:bg-blue-600'
-                            onClick={() => {
-                                setClientData((prevState) => ({
-                                    ...prevState,   
-                                    targetClientToken: "222",
-                                }));
-                                
-                            }}
-                        >Clients for user 2</button>
-                        
-                    </header>
-                    <div className="p-3">
-                        <div className="overflow-x-auto">
-                            <table className="table-auto w-full">
-                                <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
-                                    <tr>
-                                        <th className="p-2 whitespace-nowrap">
-                                            <div className="font-semibold text-left">Client Name</div>
-                                        </th>
-                                        <th className="p-2 whitespace-nowrap">
-                                            <div className="font-semibold text-left">Company Name</div>
-                                        </th>
-                                        <th className="p-2 whitespace-nowrap">
-                                            <div className="font-semibold text-left">Total Billed</div>
-                                        </th>
-                                        <th className="p-2 whitespace-nowrap">
-                                            
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-sm divide-y divide-gray-100">
-                                    {
-                                        clientData.isLoaded 
-                                        ? content
-                                        : loadingMask
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        <div className="w-full max-w-2xl bg-white shadow-lg rounded-sm border border-gray-200">
+            <header className="px-5 py-4 border-b border-gray-100 flex">
+                <h2 className="font-semibold text-gray-800 flex-1">Customers</h2>
+            </header>
+            <button onClick={() => {
+                clientData.dispatchClientData({
+                    type: "CLEAN_LOADING"
+                });
+            }}>
+            Clean Table
+          </button>
+            <div className="p-3">
+                <div className="overflow-x-auto">
+                    <table className="table-auto w-full">
+                        <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                            <tr>
+                                <th className="p-2 whitespace-nowrap">
+                                    <div className="font-semibold text-left">Client Name</div>
+                                </th>
+                                <th className="p-2 whitespace-nowrap">
+                                    <div className="font-semibold text-left">Company Name</div>
+                                </th>
+                                <th className="p-2 whitespace-nowrap">
+                                    <div className="font-semibold text-left">Total Billed</div>
+                                </th>
+                                <th className="p-2 whitespace-nowrap">
+                                    
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm divide-y divide-gray-100">
+                            {
+                                clientData.error 
+                                ? <ErrorMessage message={clientData.error} />
+                                : 
+                                    clientData.isLoaded 
+                                    ? content
+                                    : loadingMask
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
+        </div>
     )
-}
+})
