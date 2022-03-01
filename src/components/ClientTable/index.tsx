@@ -64,8 +64,6 @@ export type ErrorMessageProps = {
 
 export const ErrorMessage = (props: ErrorMessageProps) => {
     return (
-        <tr>
-        <td colSpan={4}>
         <div className="flex gap-4 bg-red-500 p-4 rounded-md">
             <div className="w-max">
                 <div className="h-10 w-10 flex rounded-full bg-gradient-to-b from-red-100 to-red-300 text-red-700">
@@ -88,8 +86,6 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                 <p className="text-red-100 leading-tight">{props.message}</p>
             </div>
         </div>
-        </td>
-        </tr>
     )
 }
 
@@ -129,13 +125,6 @@ export const ClientTable = memo<ClientTableProps>((props) => {
             <header className="px-5 py-4 border-b border-gray-100 flex">
                 <h2 className="font-semibold text-gray-800 flex-1">Customers</h2>
             </header>
-            <button onClick={() => {
-                clientData.dispatchClientData({
-                    type: "CLEAN_LOADING"
-                });
-            }}>
-            Clean Table
-          </button>
             <div className="p-3">
                 <div className="overflow-x-auto">
                     <table className="table-auto w-full">
@@ -158,7 +147,13 @@ export const ClientTable = memo<ClientTableProps>((props) => {
                         <tbody className="text-sm divide-y divide-gray-100">
                             {
                                 clientData.error 
-                                ? <ErrorMessage message={clientData.error} />
+                                ? (
+                                    <tr>
+                                        <td colSpan={4}>
+                                            <ErrorMessage message={clientData.error} />
+                                        </td>
+                                    </tr>
+                                )
                                 : 
                                     clientData.isLoaded 
                                     ? content

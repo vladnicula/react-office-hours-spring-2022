@@ -32,19 +32,21 @@ const reducer = (state, action) => {
     return state;
 }
 
-export const useClientData = () => {
+export const useClientData = (authToken: null | string) => {
     const [clientData, dispatchClientData] = useReducer(
         reducer,
         {
             initialised: false,
             isLoaded: false,
-            targetClientToken: "111",
             error: null as string | null,
             clients: [] as Record<string, any>[]
         }
     );
 
     useEffect(() => {
+        if ( authToken === null ) {
+            return;
+        }
         let isEffectActive = true;
         dispatchClientData({
             type: "CLEAN_LOADING"
@@ -52,7 +54,7 @@ export const useClientData = () => {
 
         fetch(`//localhost:3139/clients`, {
             headers: {
-                "Authorization": `Bearer ${clientData.targetClientToken}`
+                "Authorization": `Bearer ${authToken}`
             }
         })
         .then((httpResponse) => {
@@ -81,7 +83,7 @@ export const useClientData = () => {
             isEffectActive = false;
         }
 
-    }, [clientData.isLoaded])
+    }, [authToken])
 
     return [clientData, dispatchClientData];
 }
