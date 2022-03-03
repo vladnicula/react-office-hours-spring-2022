@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { memo, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { ClientDataContext } from '../../../pages';
+import { ClientDataContext } from '../../contexts/ClientDataProvider';
 
 export type ClientTableRowItemProps = {
     name: string

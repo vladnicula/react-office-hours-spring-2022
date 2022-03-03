@@ -16,6 +16,7 @@ type Inputs = {
 
 type LoginFormProsp = {
     onSuccessfulLogin: (token: string) => unknown
+    onNavigateToSignUp: () => unknown
 }
 
 export const LoginForm = (props: LoginFormProsp) => {
@@ -35,7 +36,6 @@ export const LoginForm = (props: LoginFormProsp) => {
             body: JSON.stringify(data)
         })
         .then( async (response) => {
-            console.log(response)
             if ( response.status === 200 ) {
                 const jsonResponse = await response.json()
                 props.onSuccessfulLogin(jsonResponse.token)
@@ -44,6 +44,7 @@ export const LoginForm = (props: LoginFormProsp) => {
             }
         })
         .catch((err) => {
+            console.log(err);
             if ( typeof err === 'string' ) {
                 setError(err)
             } else {
@@ -72,7 +73,13 @@ export const LoginForm = (props: LoginFormProsp) => {
                     {/* errors will return when field validation fails  */}
                     {errors.password && <span>{errors.password.message}</span>}
                     <br/>
-                    <input style={{ width: 100}} className="relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible" type="submit" />
+                    <div className="flex justify-between">
+                        <input style={{ width: 100}} className="relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible" type="submit" />
+                        <button onClick={(ev) => {
+                            ev.preventDefault();
+                            props.onNavigateToSignUp();
+                        }} className="ml-2 relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible">Sign Up</button>
+                    </div>
                 </form>
             </div>
         </div>

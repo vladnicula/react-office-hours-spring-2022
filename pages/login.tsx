@@ -1,10 +1,19 @@
+import { useRouter } from 'next/router'
 import { LoginForm } from "../src/containers/LoginForm/LoginForm";
 
 const LoginPage = () => {
+
+    const router = useRouter()
     return (
-        <LoginForm onSuccessfulLogin={(token) => {
-            console.log("nonthing for now", token)
-        }} />
+        <LoginForm 
+            onSuccessfulLogin={(token) => {
+                window.localStorage.setItem('userToken', token);
+                router.replace("/")
+            }} 
+            onNavigateToSignUp={() => {
+                router.push("/sign-up")
+            }}
+        />
     )
 }
 

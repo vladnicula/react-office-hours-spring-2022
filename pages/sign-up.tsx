@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { useRouter } from "next/router";
 
 const signUpSchema = yup.object({
     name: yup.string().required(),
@@ -20,6 +21,7 @@ type Inputs = {
 };
 
 const SignUpPage = () => {
+    const router = useRouter()
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>({
         resolver: yupResolver(signUpSchema)
@@ -73,7 +75,14 @@ const SignUpPage = () => {
                     {/* errors will return when field validation fails  */}
                     {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
                     <br/>
-                    <input style={{ width: 100}} className="relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible" type="submit" />
+                    <div className="flex justify-between">
+                        <input style={{ width: 100}} className="relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible" type="submit" />
+                        <button onClick={(ev) => {
+                            ev.preventDefault();
+                            // props.onNavigateToSignUp();
+                            router.push('/login')
+                        }} className="ml-2 relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible">Login</button>
+                    </div>
                 </form>
             </div>
         </div>
