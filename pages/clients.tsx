@@ -2,7 +2,7 @@ import { Breadcrumbs, Link, Typography } from '@mui/material'
 import type { NextPage } from 'next'
 import NextLink from 'next/link'
 import React from 'react'
-import { ClientTable } from '../src/components/ClientTable'
+import { ClientTable } from '../src/containers/ClientTableContainer'
 import { AuthContextProvider } from '../src/contexts/AuthContextProvider'
 import { ClientDataProvider } from '../src/contexts/ClientDataProvider'
 

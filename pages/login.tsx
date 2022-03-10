@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react';
-import { LoginForm } from "../src/containers/LoginForm/LoginForm";
+import { LoginForm } from "../src/forms/LoginForm/LoginForm";
 
 const LoginPage = () => {
 

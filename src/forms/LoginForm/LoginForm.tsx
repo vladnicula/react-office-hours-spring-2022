@@ -1,10 +1,9 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import { ErrorMessage } from "../../components/ClientTable";
-import { TextField } from "../../components/TextField/TextField";
+import { ErrorMessage } from "../../containers/ClientTableContainer";
 import { PasswordField } from "../../components/PasswordField/PasswordField";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 const loginSchema = yup.object({
     email: yup.string().email().required(),
@@ -36,10 +35,12 @@ export const LoginForm = (props: LoginFormProps) => {
                 <form className="flex flex-col" onSubmit={handleSubmit(props.onLoginRequest)}>
 
                     <TextField 
-                        fieldId="name"
-                        labelTitle="Email"
+                        margin="normal" 
+                        id="name"
+                        label="Email"
                         inputProps={{...register("email", { required: true }) }}
-                        errorMessage={errors.email?.message}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
                     />
 
                     <PasswordField 
