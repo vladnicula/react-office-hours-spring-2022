@@ -7,7 +7,19 @@ export type ClientParams = {
     companyRegNumber: string
 };
 
-
+export type ClientResponseModel = {
+    id: string;
+    email: string;
+    name: string;
+    totalBilled: number;
+    invoicesCount: number;
+    companyDetails: {
+        name: string;
+        address: string;
+        vatNumber: string;
+        regNumber: string;
+    };
+}
 
 export const ClientAPI = {
     createClient: async (authToken: string, params: ClientParams) => {
@@ -34,5 +46,40 @@ export const ClientAPI = {
         const jsonReponse = await httpResponse.json();
 
         console.log(jsonReponse)
+    },
+
+    getClients: async (authToken: string, params: {
+        order: "asc" | "desc",
+        orderBy: "email" | "invoiceCount",
+        limit: number,
+        offset: number
+    }) => {
+        // TODO check and allow non filtered or sorted use
+
+        const queryParams = {
+            sort: {
+                [params.orderBy]: params.order,
+            },
+            limit: params.limit,
+            offset: params.offset
+        }
+
+        console.log(queryParams)
+    
+        const encodeParamsString = encodeURIComponent(JSON.stringify(queryParams));
+
+        const httpResponse = await fetch(`http://localhost:3139/clients?params=${encodeParamsString}`, {
+            headers: {
+                "Authorization": `Bearer ${authToken}`
+            }
+        })
+
+        const jsonReponse = await httpResponse.json();
+
+        // TODO add typesafety with try catch and error if invalid data recieved
+        return jsonReponse as {
+            total: number,
+            clients: ClientResponseModel[]
+        }
     }
 }

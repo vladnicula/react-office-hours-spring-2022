@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 import { useRouter } from 'next/router'
+import { getCookie, removeCookies } from 'cookies-next';
 
 const useUserAuth = () => {
     const router = useRouter()
@@ -7,14 +8,13 @@ const useUserAuth = () => {
     const [authUserToken, setAuthUserToken] = useState<null | string>(null)
 
     useEffect(() => {
-        const userToken = window.localStorage.getItem("userToken")
+        const userToken = getCookie("userToken") as string
         if ( userToken ) {
           setAuthUserToken(userToken)
           setIsLoading(false)
         } else {
           router.replace("/login")
         }
-
     }, [])
 
     return {
@@ -50,7 +50,8 @@ export type AuthContextType = {
     return (
       <AuthContext.Provider value={{
         authUserToken, login: setAuthUserToken, logout: () => {
-          window.localStorage.removeItem("userToken")
+          // window.localStorage.removeItem("userToken")
+          removeCookies('userToken')
           router.replace('/login')
         }
       }}>

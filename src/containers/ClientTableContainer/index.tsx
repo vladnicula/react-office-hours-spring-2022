@@ -1,8 +1,10 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
+import { Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import { Box } from '@mui/system';
-import { memo, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { ClientDataContext } from '../../contexts/ClientDataProvider';
+import { memo, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router'
 import { visuallyHidden } from '@mui/utils';
+import { AuthContext } from '../../contexts/AuthContextProvider';
+import { ClientAPI } from '../../api/clients';
 
 export type ClientTableRowItemProps = {
     name: string
@@ -32,6 +34,10 @@ export const ClientTableRowItem = (props: ClientTableRowItemProps) => {
 }
 
 export type ClientTableProps = {
+    initialPayload?: {
+        clients: ClientResponseModel[],
+        total: number
+    }
 }
 
 export type ErrorMessageProps = {
@@ -154,14 +160,34 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
 type Order = 'asc' | 'desc'
 type ClientSortBy = 'email' | 'invoiceCount'
 
-export const ClientTable = memo<ClientTableProps>((props) => {
-    const clientData = useContext(ClientDataContext);
+export type ClientResponseModel = {
+    id: string;
+    email: string;
+    name: string;
+    totalBilled: number;
+    invoicesCount: number;   
+    companyDetails: {
+        name: string;
+        address: string;
+        vatNumber: string;
+        regNumber: string;
+    };
+}
 
+export const ClientTable = memo<ClientTableProps>((props) => {
+    const router = useRouter();
+
+    // TODO probaly a good place to typecheck
+    const currentPageNumber = router.query.page 
+        ? parseInt(router.query.page as string, 10)
+        : 1
+
+    const clientsArray = props.initialPayload?.clients ?? [];
+    const totalClients = props.initialPayload?.total ?? 0;
+
+    const [limit, setLimit] = useState(2);
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<ClientSortBy>('email');
-
-    console.log("rerender", order, orderBy)
-
     
     const loadingMask = (
         <tr>
@@ -176,7 +202,7 @@ export const ClientTable = memo<ClientTableProps>((props) => {
         </tr>
     )
 
-    const content = clientData.clients ? clientData.clients.map((client) => {
+    const content = clientsArray ? clientsArray.map((client) => {
         return (
             <ClientTableRowItem 
                 key={client.email}
@@ -212,6 +238,10 @@ export const ClientTable = memo<ClientTableProps>((props) => {
             setOrder(isAsc ? 'desc' : 'asc');
             setOrderBy(property);
     };
+
+    const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        router.push(`/clients?page=${value}`)
+    }
         
     return (
         <div className="w-full max-w-2xl bg-white shadow-lg rounded-sm border border-gray-200">
@@ -235,7 +265,7 @@ export const ClientTable = memo<ClientTableProps>((props) => {
                         rowCount={4}
                     />
                     <TableBody>
-                        {
+                        {/* {
                             clientData.error 
                             ? (
                                 <tr>
@@ -248,10 +278,22 @@ export const ClientTable = memo<ClientTableProps>((props) => {
                                 clientData.isLoaded 
                                 ? content
                                 : loadingMask
-                        }
+                        } */}
+                        {content}
                         </TableBody>
                     </Table>
                     </TableContainer>
+                        
+                    <span>
+                        total page count {Math.ceil(totalClients / limit)} <br/>
+                        current page { currentPageNumber }
+                    </span>
+                    <Pagination
+                        count={Math.ceil(totalClients / limit)} 
+                        page={currentPageNumber} 
+                        onChange={handlePaginationChange} 
+                        shape="rounded" 
+                    />
                 </div>
             </div>
         </div>

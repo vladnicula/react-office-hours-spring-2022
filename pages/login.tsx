@@ -1,12 +1,18 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoginForm } from "../src/forms/LoginForm/LoginForm";
+
+import { setCookies } from 'cookies-next';
 
 const LoginPage = () => {
 
     const router = useRouter()
     const [ errorMessage, setError ] = useState<undefined | string>()
 
+    // useEffect(() => {
+    //     console.log("cookies", cookie.parse(document.cookie))
+    // }, [])
+    
     return (
         <LoginForm 
             genericError={errorMessage}
@@ -21,8 +27,7 @@ const LoginPage = () => {
                 .then( async (response) => {
                     if ( response.status === 200 ) {
                         const jsonResponse = await response.json()
-                        // props.onSuccessfulLogin(jsonResponse.token)
-                        window.localStorage.setItem('userToken', jsonResponse.token);
+                        setCookies('userToken', jsonResponse.token)
                         router.replace("/")
                     } else {
                         return Promise.reject(await response.text())
