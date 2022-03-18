@@ -38,15 +38,16 @@ export const LoginForm = (props: LoginFormProps) => {
                         margin="normal" 
                         id="name"
                         label="Email"
-                        inputProps={{...register("email", { required: true }) }}
+                        inputProps={{...register("email", { required: true }), "data-test": "email-field"  }}
                         error={!!errors.email}
                         helperText={errors.email?.message}
+                        
                     />
 
                     <PasswordField 
                         fieldId="password"
                         labelTitle="Password"
-                        inputProps={{...register("password", { required: true }) }}
+                        inputProps={{...register("password", { required: true }), "data-test": "password-field" }}
                         errorMessage={errors.password?.message}
                     />
                     <br/>

@@ -6,7 +6,7 @@ import { Label } from "../../elements/Label/Label"
 export type PasswordFieldProps = {
     fieldId: string
     labelTitle: string;
-    inputProps?: React.InputHTMLAttributes<HTMLInputElement>
+    inputProps?: React.InputHTMLAttributes<HTMLInputElement> & { [key: string]: any }
     errorMessage?: string;
 }
 

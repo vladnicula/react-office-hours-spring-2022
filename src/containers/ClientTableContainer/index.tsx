@@ -1,4 +1,4 @@
-import { Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
+import { Pagination, PaginationItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import { Box } from '@mui/system';
 import { memo, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
@@ -293,6 +293,12 @@ export const ClientTable = memo<ClientTableProps>((props) => {
                         page={currentPageNumber} 
                         onChange={handlePaginationChange} 
                         shape="rounded" 
+                        renderItem={(item) => (
+                            <PaginationItem
+                                data-test={`page-${item.page}`}
+                                {...item}
+                            />
+                        )}
                     />
                 </div>
             </div>

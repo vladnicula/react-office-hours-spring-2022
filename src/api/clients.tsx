@@ -63,8 +63,6 @@ export const ClientAPI = {
             limit: params.limit,
             offset: params.offset
         }
-
-        console.log(queryParams)
     
         const encodeParamsString = encodeURIComponent(JSON.stringify(queryParams));
 
@@ -74,12 +72,25 @@ export const ClientAPI = {
             }
         })
 
-        const jsonReponse = await httpResponse.json();
+        try {
+            console.log(httpResponse.text)
+            const jsonReponse = await httpResponse.json();
 
-        // TODO add typesafety with try catch and error if invalid data recieved
-        return jsonReponse as {
-            total: number,
-            clients: ClientResponseModel[]
+            console.log("jsonReponse", jsonReponse)
+
+            // TODO add typesafety with try catch and error if invalid data recieved
+            return jsonReponse as {
+                total: number,
+                clients: ClientResponseModel[]
+            }
+        } catch (err) {
+            console.error(err)
+
+            return {
+                total: 0,
+                clients: []
+            }
         }
+        
     }
 }
