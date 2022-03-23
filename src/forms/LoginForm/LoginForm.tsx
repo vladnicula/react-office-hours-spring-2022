@@ -22,7 +22,6 @@ export type LoginFormProps = {
 }
 
 export const LoginForm = (props: LoginFormProps) => {
-
     const { register, handleSubmit, watch, formState: { errors } } = useForm<LoginInputs>({
         mode: "onBlur",
         resolver: yupResolver(loginSchema)

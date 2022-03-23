@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { useRouter } from 'next/router'
 import { getCookie, removeCookies } from 'cookies-next';
 
@@ -30,13 +30,17 @@ export type AuthContextType = {
     logout: () => void
   }
   
-  export const AuthContext = createContext<AuthContextType>({
-    authUserToken: null,
-    login: (token: string) => {},
-    logout: () => {}
-  })
+  export const AuthContext = createContext<null | AuthContextType>(null)
   
-  
+export const useAuthContext = () => {
+    const auth = useContext(AuthContext)
+    if ( auth === null ) {
+        throw new Error("Auth context is not initialised yet")
+    }
+
+    return auth;
+}
+
   export const AuthContextProvider = (props: {
     children?: React.ReactNode;
   }) => {

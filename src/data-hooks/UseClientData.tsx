@@ -1,6 +1,6 @@
-import { useEffect, useReducer, useState } from "react";
+import { Reducer, useEffect, useReducer } from "react";
 
-const reducer = (state, action) => {
+const reducer: Reducer<any, any> = (state, action) => {
     console.log("redeucer running", {action, state})
     switch(action.type) {
         case "CLEAN_LOADING": {

@@ -14,38 +14,19 @@ type ClientPageProps = {
   total: number
 }
 
-const SomeMemoCompoent = memo(() => {
-  return (
-    <Breadcrumbs aria-label="breadcrumb">
-    <NextLink href="/">
-      <Link underline="hover" color="inherit" href="/">
-        Dashboard
-      </Link>
-    </NextLink>
-    <Typography color="text.primary">Clients</Typography>
-  </Breadcrumbs>
-  )
-})
 
-const ClientPage: NextPage<ClientPageProps> = (props) => {
-  useEffect(() => {
-    console.log("ClientPage mounts")
-    return () => {
-      console.log("ClientPage unmounts")
-    }
-  }, [])
-
-  useEffect(() => {
-    console.log("porps have updated")
-    // @ts-ignore
-  }, [...Object.keys(props).map((key) => props[key])])
-  
+const ClientPage: NextPage<ClientPageProps> = (props) => {    
   return (
     <AuthContextProvider>
-        <ClientDataProvider>
-          <SomeMemoCompoent />
+        <Breadcrumbs aria-label="breadcrumb">
+            <NextLink href="/">
+              <Link underline="hover" color="inherit" href="/">
+                Dashboard
+              </Link>
+            </NextLink>
+            <Typography color="text.primary">Clients</Typography>
+          </Breadcrumbs>  
           <ClientTable initialPayload={props} />
-        </ClientDataProvider>
     </AuthContextProvider>
   )
 }

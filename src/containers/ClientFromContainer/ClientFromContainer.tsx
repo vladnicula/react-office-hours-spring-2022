@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { ClientAPI } from "../../api/clients";
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { useAuthContext } from "../../contexts/AuthContextProvider";
 import { AddClientForm } from "../../forms/AddClientForm/AddClientForm";
 
 export const AddClientFormContainer = () => {
     const router = useRouter()
-    const auth = useContext(AuthContext)
+    const auth = useAuthContext()
 
     return (
         // TODO name properly

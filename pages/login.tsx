@@ -1,10 +1,15 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { LoginForm } from "../src/forms/LoginForm/LoginForm";
 
 import { setCookies } from 'cookies-next';
 
 const LoginPage = () => {
+
+    console.log({
+        "public": process.env.NEXT_PUBLIC_HELLO,
+        "private": process.env.PRIVATE_HELLO
+    })
 
     const router = useRouter()
     const [ errorMessage, setError ] = useState<undefined | string>()
