@@ -1,4 +1,4 @@
-import { ServerResponse } from "http";
+import { InvoiceAPI } from "./invoice-api-backend";
 
 export type ClientParams = {
     email: string,
@@ -8,8 +8,6 @@ export type ClientParams = {
     companyTaxNumber: string,
     companyRegNumber: string
 };
-
-export class InvalidUserTokenError extends Error {}
 
 export type ClientResponseModel = {
     id: string;
@@ -26,6 +24,7 @@ export type ClientResponseModel = {
 }
 
 export const ClientAPI = {
+
     createClient: async (authToken: string, params: ClientParams) => {
         const payload = {
             email: params.email,
@@ -38,22 +37,10 @@ export const ClientAPI = {
             }
         }
 
-        const httpResponse = await fetch("http://localhost:3139/clients", {
-            method: "POST",
-            headers: {
-                "Content-Type": 'application/json',
-                "Authorization": `Bearer ${authToken}`
-            },
-            body: JSON.stringify(payload)
-        })
-
-        const jsonReponse = await httpResponse.json();
-
-        console.log(jsonReponse)
+        InvoiceAPI.instance.httpRequester.post("/clients", payload)
     },
-
-    getClients: async (authToken: string, params: {
-        res: ServerResponse,
+    
+    getClients: async (params: {
         order: "asc" | "desc",
         orderBy: "email" | "invoiceCount",
         limit: number,
@@ -70,39 +57,13 @@ export const ClientAPI = {
         }
     
         const encodeParamsString = encodeURIComponent(JSON.stringify(queryParams));
-        
-        console.log(`${process.env.NEXT_PUBLIC_INVOICE_API_HOST}/clients?params=${encodeParamsString}`)
 
-        const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_INVOICE_API_HOST}/clients?params=${encodeParamsString}`, {
-            headers: {
-                "Authorization": `Bearer ${authToken}`
-            }
-        })
+        const httpResponse = await InvoiceAPI.instance.httpRequester.get(`/clients?params=${encodeParamsString}`)
 
-        if ( httpResponse.status === 401 ) {
-            throw new InvalidUserTokenError('Invalid Token')
+        return httpResponse.data as {
+            type: "success",
+            total: number,
+            clients: ClientResponseModel[]
         }
-
-        try {
-
-            const jsonReponse = await httpResponse.json();
-
-            console.log("jsonReponse", jsonReponse)
-
-            // TODO add typesafety with try catch and error if invalid data recieved
-            return jsonReponse as {
-                type: "success",
-                total: number,
-                clients: ClientResponseModel[]
-            }
-        } catch (err) {
-            console.error(err)
-
-            return {
-                total: 0,
-                clients: []
-            }
-        }
-        
     }
 }

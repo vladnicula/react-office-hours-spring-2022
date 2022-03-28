@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
 import { ClientAPI } from "../../api/clients";
 import { useAuthContext } from "../../contexts/AuthContextProvider";
 import { AddClientForm } from "../../forms/AddClientForm/AddClientForm";

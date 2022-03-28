@@ -1,7 +1,6 @@
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import { useState } from "react";
-import { Label } from "../../elements/Label/Label"
 
 export type PasswordFieldProps = {
     fieldId: string

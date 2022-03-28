@@ -1,11 +1,14 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import React from 'react'
-import { ClientAPI, ClientResponseModel, InvalidUserTokenError } from '../src/api/clients'
+import { ClientAPI, ClientResponseModel } from '../src/api/clients'
+import NextLink from 'next/link'
+
+import { LogoutButtonWrapper } from '../src/containers/LogoutButton/LogoutButtont'
+import { InvalidUserTokenError, InvoiceAPI } from '../src/api/invoice-api-backend'
+import { handle401Erorr } from '../src/utils/serverside-401-handler'
 import { ClientTable } from '../src/containers/ClientTableContainer'
 import { ErrorBoundary } from '../src/containers/ErrorBoundry/ErrorBoundry'
-import { LogoutButtonWrapper } from '../src/containers/LogoutButton/LogoutButtont'
 import { AuthContextProvider } from '../src/contexts/AuthContextProvider'
-import NextLink from 'next/link'
 
 export const MainNavigation = () => {  
   return (
@@ -41,9 +44,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { res } = context
 
   try {
-
-    const clientResponse = await ClientAPI.getClients(userAuthToken, {
-      res,
+    InvoiceAPI.instance.setup(userAuthToken)
+    const clientResponse = await ClientAPI.getClients({
       order: "asc",
       orderBy: "email",
       limit: 2,
@@ -59,18 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   } catch (err) {
       if ( err instanceof InvalidUserTokenError) {
-        context.res.setHeader(
-            "Set-Cookie", [
-            `WebsiteToken=deleted; Max-Age=0`,
-            `AnotherCookieName=deleted; Max-Age=0`]
-        );
-
-        return {
-          redirect: {
-            permanent: false,
-            destination: "/login"
-          }
-        }
+        return handle401Erorr(context)
       }      
   }
 
@@ -80,4 +71,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 
-export default Home;
+export default Home
