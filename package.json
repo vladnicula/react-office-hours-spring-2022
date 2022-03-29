@@ -7,7 +7,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "debug": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
     "@emotion/react": "^11.8.1",

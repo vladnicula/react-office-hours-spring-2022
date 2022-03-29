@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { useAuthContext } from "../../contexts/AuthContextProvider";
 
 export const LogoutButtonWrapper =  () => {
-    const {logout} = useContext(AuthContext)
+    const {logout} = useAuthContext()
 
     return (
         <button onClick={() => {

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react"
 import { useClientData } from "../data-hooks/UseClientData"
-import { AuthContext } from "./AuthContextProvider"
+import { useAuthContext } from "./AuthContextProvider"
 
 export const ClientDataContext = createContext<{
     isLoaded: boolean;
@@ -17,7 +17,7 @@ export const ClientDataContext = createContext<{
 export const ClientDataProvider = (props: {
     children?: React.ReactNode;
 }) => {
-    const {authUserToken} = useContext(AuthContext)
+    const {authUserToken} = useAuthContext()
     const [clientData, dispatchClientData] = useClientData(authUserToken)
     return (
         <ClientDataContext.Provider value={{...clientData, dispatchClientData}}>

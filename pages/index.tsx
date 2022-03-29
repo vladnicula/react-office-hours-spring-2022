@@ -41,7 +41,6 @@ const Home: NextPage<ClientPageProps> = (props) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userAuthToken = context.req.cookies.userToken as string
-  const { res } = context
 
   try {
     InvoiceAPI.instance.setup(userAuthToken)
