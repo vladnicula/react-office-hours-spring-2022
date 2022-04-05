@@ -46,7 +46,6 @@ const SignUpPage = () => {
         .catch((err) => {
             console.log("Should handle", err)
         });
-        console.log('form ready for submission', data)
     }
 
     const inputClassName = `border border-2 rounded-r px-4 py-2 w-full`;

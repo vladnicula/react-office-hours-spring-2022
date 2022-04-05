@@ -27,6 +27,7 @@ type ClientPageProps = {
 }
 
 const Home: NextPage<ClientPageProps> = (props) => {
+  
   return (
     <ErrorBoundary>
       <AuthContextProvider>
