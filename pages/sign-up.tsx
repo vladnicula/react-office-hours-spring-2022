@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+
 import { useRouter } from "next/router";
 
 const signUpSchema = yup.object({
@@ -41,6 +42,7 @@ const SignUpPage = () => {
                 console.log("successful respone", jsonResponse)
             } else {
                 console.log("should probably handle error", await response.text())
+                return Promise.reject(await response.text())
             }
         })
         .catch((err) => {
@@ -78,7 +80,6 @@ const SignUpPage = () => {
                         <input style={{ width: 100}} className="relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible" type="submit" />
                         <button onClick={(ev) => {
                             ev.preventDefault();
-                            // props.onNavigateToSignUp();
                             router.push('/login')
                         }} className="ml-2 relative bg-blue-500 text-white p-2 rounded text-md font-bold overflow-visible">Login</button>
                     </div>

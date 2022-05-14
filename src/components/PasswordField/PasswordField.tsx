@@ -1,12 +1,12 @@
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 export type PasswordFieldProps = {
     fieldId: string
     labelTitle: string;
     inputProps?: React.InputHTMLAttributes<HTMLInputElement> & { [key: string]: any }
-    errorMessage?: string;
+    errorMessage?: ReactNode;
 }
 
 export const PasswordField = (props: PasswordFieldProps) => {
@@ -43,7 +43,7 @@ export const PasswordField = (props: PasswordFieldProps) => {
                     inputProps={{...props.inputProps}}
                 />
             </FormControl>
-            {props.errorMessage && <span>{props.errorMessage}</span>}
+            {props.errorMessage}
         </>
     )
 }

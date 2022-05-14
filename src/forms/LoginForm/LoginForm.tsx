@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { ErrorMessage } from "../../containers/ClientTableContainer";
+// import { ErrorMessage } from "../../components/ErrorMessage";
 import { PasswordField } from "../../components/PasswordField/PasswordField";
 import { Button, TextField } from "@mui/material";
 
@@ -39,7 +40,11 @@ export const LoginForm = (props: LoginFormProps) => {
                         label="Email"
                         inputProps={{...register("email", { required: true }), "data-test": "email-field"  }}
                         error={!!errors.email}
-                        helperText={errors.email?.message}
+                        helperText={
+                            errors.email?.message 
+                            ? <span data-test='email-field-error'>{errors.email?.message}</span>
+                            : null 
+                        }
                         
                     />
 
@@ -47,11 +52,16 @@ export const LoginForm = (props: LoginFormProps) => {
                         fieldId="password"
                         labelTitle="Password"
                         inputProps={{...register("password", { required: true }), "data-test": "password-field" }}
-                        errorMessage={errors.password?.message}
+                        errorMessage={
+                            errors.password?.message
+                            ? <span data-test='password-field-error'>{errors.password?.message}</span>
+                            : null 
+                        }
                     />
                     <br/>
                     <div className="flex justify-between">
                         <Button 
+                            data-test='submit-login'
                             type="submit"
                             variant="contained">Login</Button>
                         <Button 
